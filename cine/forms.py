@@ -5,21 +5,21 @@ from django.core.exceptions import ValidationError
 
 # Formulario para Categoria
 class CategoriaForm(forms.ModelForm):
-    nombreCategoria = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese nombre de la categoría'}))
-    descripcion = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Ingrese una descripción'}))
-    imagenCategoria = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class': 'form-control'}))
+    nombreCategoria = forms.CharField(label='Nombre de la Categoría', widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese nombre de la categoría'}))
+    descripcion = forms.CharField(label='Descripción',widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Ingrese una descripción'}))
+    imagenCategoria = forms.ImageField(label='Imagen de la categoria',required=False, widget=forms.FileInput(attrs={'class': 'form-control'}))
     class Meta:
         model = Categoria   
         fields = '__all__'
 
 # Formulario para Pelicula
 class PeliculaForm(forms.ModelForm):
-    titulo = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el título de la película'}))
-    descripcion = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Ingrese una descripción'}))
-    fecha_estreno = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}))
-    duracion = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Duración en minutos'}))
-    categoria = forms.ModelChoiceField(queryset=Categoria.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
-    imagenPelicula = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class': 'form-control'}))
+    titulo = forms.CharField(label='Nombre de la Pelicula',widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el título de la película'}))
+    descripcion = forms.CharField(label='Descripción de la Pelicula',widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Ingrese una descripción'}))
+    fecha_estreno = forms.DateField(label='Fecha de estreno de la Pelicula',widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}))
+    duracion = forms.IntegerField(label='Duración de la Pelicula',widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Duración en minutos'}))
+    categoria = forms.ModelChoiceField(label='Categoria de la Pelicula',queryset=Categoria.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    imagenPelicula = forms.ImageField(label='Imagen de la Pelicula',required=False, widget=forms.FileInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Pelicula    
@@ -45,9 +45,9 @@ class PeliculaForm(forms.ModelForm):
 
 # Formulario para Ciudad
 class CiudadForm(forms.ModelForm):
-    nombre = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el nombre de la ciudad'}))
-    pais = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el país'}))
-    imagenCiudad = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class': 'form-control'}))
+    nombre = forms.CharField(label='Nombre de la ciudad',widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el nombre de la ciudad'}))
+    pais = forms.CharField(label='Pais de la ciudad',widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el país'}))
+    imagenCiudad = forms.ImageField(label='Imagen de la ciudad',required=False, widget=forms.FileInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Ciudad  
@@ -55,10 +55,10 @@ class CiudadForm(forms.ModelForm):
 
 # Formulario para Cine
 class CineForm(forms.ModelForm):
-    nombre = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el nombre del cine'}))
-    direccion = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese la dirección del cine'}))
-    ciudad = forms.ModelChoiceField(queryset=Ciudad.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
-    imagenCine = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class': 'form-control'}))
+    nombre = forms.CharField(label='Nombre del Cine',widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el nombre del cine'}))
+    direccion = forms.CharField(label='Dirección del cine',widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese la dirección del cine'}))
+    ciudad = forms.ModelChoiceField(label='Ciudad del cine',queryset=Ciudad.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    imagenCine = forms.ImageField(label='Imagen del cine',required=False, widget=forms.FileInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Cine    
@@ -66,10 +66,10 @@ class CineForm(forms.ModelForm):
 
 # Formulario para Comida
 class ComidaForm(forms.ModelForm):
-    nombre = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el nombre de la comida'}))
-    categoria = forms.ModelChoiceField(queryset=CategoriaComida.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
-    precio = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el precio'}))
-    imagenComida = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class': 'form-control'}))
+    nombre = forms.CharField(label='Nombre de la comida',widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el nombre de la comida'}))
+    categoria = forms.ModelChoiceField(label='Tipo de comida',queryset=CategoriaComida.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    precio = forms.IntegerField(label='Precio de la comida',widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el precio'}))
+    imagenComida = forms.ImageField(label='Imagen de la comida',required=False, widget=forms.FileInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Comida  
@@ -90,9 +90,9 @@ class ComidaForm(forms.ModelForm):
 
 # Formulario para Categoria Comida
 class CategoriaComidaForm(forms.ModelForm):
-    nombreCategoriaComida = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el nombre de la categoria'}))
-    descripcionCategoria = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el descripción de la categoria'}))
-    imagenCatComida = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class': 'form-control'}))
+    nombreCategoriaComida = forms.CharField(label='Nombre de la Categoría de comida',widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el nombre de la categoria'}))
+    descripcionCategoria = forms.CharField(label='Descripción de la Categoría de comida',widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el descripción de la categoria'}))
+    imagenCatComida = forms.ImageField(label='Imagen de la Categoría de comida',required=False, widget=forms.FileInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = CategoriaComida
