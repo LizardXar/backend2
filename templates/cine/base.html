@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CinemaWW</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-sm navbar-dark bg-danger" style="padding-left:20px;">
+        <a class="navbar-brand" href="{% url 'index' %}">Cinema WorldWide</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsableList"
+            aria-controls="collapsableList" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse d-flex justify-content-between" id="collapsableList">
+            <ul class="navbar-nav d-flex flex-row ml-auto">
+                <li class="nav-item"><a class="nav-link active" href="{% url 'index' %}">Inicio</a></li>
+                <li class="nav-item"><a class="nav-link active" href="{% url 'cine_cards' %}">Cines</a></li>
+                <li class="nav-item"><a class="nav-link active" href="{% url 'comidas_cards' %}">Comidas</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="dropdownMenuButton" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Mantenedores
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item" href="{% url 'peliculas' %}">Películas</a></li>
+                        <li><a class="dropdown-item" href="{% url 'comidas' %}">Comidas</a></li>
+                        <li><a class="dropdown-item" href="{% url 'cines' %}">Cines</a></li>
+                        <li><a class="dropdown-item" href="{% url 'ciudades' %}">Ciudades</a></li>
+                        <li><a class="dropdown-item" href="{% url 'categoriasComidas' %}">Categoría de comidas</a></li>
+                        <li><a class="dropdown-item" href="{% url 'categorias' %}">Categoría de películas</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <br>
+    <br>
+    <div class="container px-3 my-5">
+        <div class="card tabla text-white shadow-lg mb-4">
+            <div class="card-header">
+                {% block titulo %}
+                <h5 class="card-title text-center">Inicio</h5>
+                {% endblock titulo %}
+            </div>
+            <div class="card-body">
+                <div class="container my-3">
+                    <div class="row justify-content-center">
+                        <div class="col-12 col-md-10">
+                            <!-- Inicio del bloque contenido -->
+                            {% block contenido %}
+
+                            {% endblock contenido %}
+                            <!-- Fin del bloque contenido -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+
+
+    <!-- Inicio del bloque js -->
+    {% block js %}
+    {% endblock js %}
+    <!-- Fin del bloque js -->
+
+</body>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+</html>

@@ -1,0 +1,43 @@
+{% extends "cine/base.html" %}
+{% load static %}
+
+{% block titulo %}
+<h5 class="card-title text-center">Cines</h5>
+{% endblock titulo %}
+
+{% block contenido %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between mb-3">
+        <input type="search" class="form-control w-50" placeholder="Buscar cine...">
+        <a class="btn btn-success ms-3" href="{% url 'crearCine' %}">Crear</a>
+    </div>
+
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th class="bg-danger text-white" scope="col">#</th>
+                <th class="bg-danger text-white" scope="col">Nombre</th>
+                <th class="bg-danger text-white" scope="col">Dirección</th>
+                <th class="bg-danger text-white" scope="col">Ciudad</th>
+                <th class="bg-danger text-white" scope="col">Imagen</th>
+                <th class="bg-danger text-white" scope="col">Ver</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for cine in cines %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ cine.nombre }}</td>
+                <td>{{ cine.direccion }}</td>
+                <td>{{ cine.ciudad.nombre }}</td>
+                <td><img src="{{ cine.imagenCine.url }}" alt="{{ cine.nombre }}" width="40" height="40"></td>
+                <td>
+                    <a href="{% url 'editarCine' cine.idCine %}" class="text-primary"><i class="bi bi-eye"></i></a>
+                </td>
+
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock contenido %}

@@ -1,0 +1,54 @@
+{% extends "cine/base.html" %}
+{% load static %}
+
+{% block titulo %}
+<h5 class="card-title text-center">Crear Cine</h5>
+{% endblock titulo %}
+
+{% block contenido %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+        <!-- Columna de 9: Campos del formulario -->
+        <div class="col-9">
+            <div class="row">
+                <div class="col-4 mb-3">
+                    {{ form.nombre.label_tag }}
+                    {{ form.nombre }}
+                    <span class="text-danger">{{ form.nombre.errors }}</span>
+                </div>
+                <div class="col-4 mb-3">
+                    {{ form.ciudad.label_tag }}
+                    {{ form.ciudad }}
+                    <span class="text-danger">{{ form.ciudad.errors }}</span>
+                </div>
+                <div class="col-4 mb-3">
+                    {{ form.direccion.label_tag }}
+                    {{ form.direccion }}
+                    <span class="text-danger">{{ form.direccion.errors }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna de 3: Imagen e input de imagen -->
+        <div class="col-3">
+            <div class="text-center">
+                <img src="{% static 'img/cine.png' %}" alt="imagen de cine" width="200" height="auto">
+                <div class="mb-3">
+                    {{ form.imagenCine.label_tag }}
+                    {{ form.imagenCine }}
+                    <span class="text-danger">{{ form.imagen.errors }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fila aparte para los botones -->
+    <div class="row mt-4">
+        <div class="col-12 d-flex justify-content-left gap-3">
+            <a href="javascript:history.back()" class="btn btn-secondary">Volver</a>
+            <button type="submit" class="btn btn-success">Guardar</button>
+        </div>
+    </div>
+</form>
+{% endblock contenido %}

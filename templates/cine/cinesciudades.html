@@ -1,0 +1,27 @@
+{% extends "cine/base.html" %}
+{% load static %}
+
+{% block titulo %}
+<h5 class="card-title text-center">Ciudades con Cines</h5>
+{% endblock titulo %}
+
+{% block contenido %}
+<div class="container mt-4">
+    <div class="row">
+        {% for ciudad in ciudades %}
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <img src="{{ ciudad.imagenCiudad.url }}" class="card-img-top" alt="{{ ciudad.nombreCiudad }}" style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ ciudad.nombre }}</h5>
+                    <p class="card-text">{{ ciudad.pais }}</p>
+                    <a class="btn btn-primary" href="{% url 'cines_por_ciudad' ciudad.idCiudad %}">Ver Cines</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center">No hay ciudades disponibles en este momento.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock contenido %}

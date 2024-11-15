@@ -1,0 +1,28 @@
+{% extends "cine/base.html" %}
+{% load static %}
+
+{% block titulo %}
+<h5 class="card-title text-center">Generos de peliculas</h5>
+{% endblock titulo %}
+
+{% block contenido %}
+<div class="container mt-4">
+    <div class="row">
+        {% for categoria in categorias %}
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <!-- Imagen de la categoría -->
+                <img src="{{ categoria.imagenCategoria.url }}" class="card-img-top" alt="{{ categoria.nombre }}" style="height: 200px; object-fit: cover;">
+                
+                <!-- Contenido del card -->
+                <div class="card-body">
+                    <h5 class="card-title">{{ categoria.nombreCategoria }}</h5>
+                    <p class="card-text">{{ categoria.descripcion }}</p>
+                    <a class="btn btn-primary" href="{% url 'peliculas_por_categoria' categoria.idCategoria %}">Ver películas</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock contenido %}

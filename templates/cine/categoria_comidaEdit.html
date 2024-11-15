@@ -1,0 +1,50 @@
+{% extends "cine/base.html" %}
+{% load static %}
+{% block titulo %}
+<h5 class="card-title text-center">Editar categoria de comida</h5>
+{% endblock titulo %}
+
+{% block contenido %}
+<form method="post" action="{% url 'categoriaComidaEditado' categoria_comida.idCategoriaComida %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-9">
+            <div class="row">
+                <div class="col-6 mb-3">
+                    {{ form.nombreCategoriaComida.label_tag }}
+                    {{ form.nombreCategoriaComida }}
+                    <span class="text-danger">{{ form.nombreCategoriaComida.errors }}</span>
+                </div>
+                <div class="col-6 mb-3">
+                    {{ form.descripcionCategoria.label_tag }}
+                    {{ form.descripcionCategoria }}
+                    <span class="text-danger">{{ form.descripcionCategoria.errors }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-3">
+            <div class="text-center">
+                <img src="{{ categoria_comida.imagenCatComida.url }}" alt="imagen de Categoria de comida" width="200" height="200">
+                <div class="mb-3">
+                    {{ form.imagenCatComida.label_tag }}
+                    {{ form.imagenCatComida }}
+                    <span class="text-danger">{{ form.imagen.errors }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-1">
+            <a href="javascript:history.back()" class="btn btn-secondary">Volver</a>
+        </div>
+        <div class="col-1">
+            <a href="{% url 'eliminarCategoriaComida' categoria_comida.idCategoriaComida %}" class="btn btn-danger">Eliminar</i></a>
+        </div>
+        <div class="col-1">
+            <button type="submit" class="btn btn-success">guardar</button>
+        </div>
+    </div>
+</form>
+    
+{% endblock contenido %}

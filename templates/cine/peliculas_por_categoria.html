@@ -1,0 +1,45 @@
+{% extends "cine/base.html" %}
+{% load static %}
+
+{% block titulo %}
+<h5 class="card-title text-center">Películas</h5>
+{% endblock titulo %}
+
+{% block contenido %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between mb-3">
+        <input type="search" class="form-control w-50" placeholder="Buscar película...">
+        <a class="btn btn-success ms-3" href="{% url 'crearPelicula' %}">Crear</a>
+    </div>
+
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th class="bg-danger text-white" scope="col">#</th>
+                <th class="bg-danger text-white" scope="col">Título</th>
+                <th class="bg-danger text-white" scope="col">Categoría</th>
+                <th class="bg-danger text-white" scope="col">Descripción</th>
+                <th class="bg-danger text-white" scope="col">Fecha de Estreno</th>
+                <th class="bg-danger text-white" scope="col">Duración</th>
+                <th class="bg-danger text-white" scope="col">Imagen</th>
+                <th class="bg-danger text-white" scope="col">Ver</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pelicula in peliculas %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ pelicula.titulo }}</td>
+                <td>{{ pelicula.categoria.nombreCategoria }}</td>
+                <td>{{ pelicula.descripcion }}</td>
+                <td>{{ pelicula.fecha_estreno }}</td>
+                <td>{{ pelicula.duracion }} min</td>
+                <td><img src="{{ pelicula.imagenPelicula.url }}" alt="{{ pelicula.titulo }}" width="50" height="50"></td>
+                <td>
+                    <a href="{% url 'editarPelicula' pelicula.idPelicula %}" class="text-primary"><i class="bi bi-eye"></i></a>
+                </td>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock contenido %}

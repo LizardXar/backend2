@@ -1,0 +1,56 @@
+{% extends "cine/base.html" %}
+{% load static %}
+
+{% block titulo %}
+<h5 class="card-title text-center">Editar Comida</h5>
+{% endblock titulo %}
+
+{% block contenido %}
+<form method="post" enctype="multipart/form-data" action="{% url 'comidaEditado' comida.idComida %}">
+    {% csrf_token %}
+    <div class="row">
+        <!-- Columna de 9: Campos del formulario -->
+        <div class="col-9">
+            <div class="row">
+                <div class="col-4 mb-3">
+                    {{ form.nombre.label_tag }}
+                    {{ form.nombre }}
+                    <span class="text-danger">{{ form.nombre.errors }}</span>
+                </div>
+                <div class="col-4 mb-3">
+                    {{ form.categoria.label_tag }}
+                    {{ form.categoria }}
+                    <span class="text-danger">{{ form.categoria.errors }}</span>
+                </div>
+                <div class="col-4 mb-3">
+                    {{ form.precio.label_tag }}
+                    {{ form.precio }}
+                    <span class="text-danger">{{ form.precio.errors }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna de 3: Imagen e input de imagen -->
+        <div class="col-3">
+            <div class="text-center">
+                <img src="{% static 'img/comida.png' %}" alt="imagen de una comida" width="200" height="auto">
+                <div class="mb-3">
+                    {{ form.imagenComida.label_tag }}
+                    {{ form.imagenComida }}
+                    <span class="text-danger">{{ form.imagenComida.errors }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fila aparte para los botones -->
+    <div class="row mt-4">
+        <div class="col-12 d-flex justify-content-left gap-3">
+            <a href="javascript:history.back()" class="btn btn-secondary">Volver</a>
+            <a href="{% url 'eliminarComida' comida.idComida %}" class="btn btn-danger">Eliminar</i></a>
+            <button type="submit" class="btn btn-success">Guardar</button>
+        </div>
+    </div>
+</form>
+{% endblock contenido %}
+

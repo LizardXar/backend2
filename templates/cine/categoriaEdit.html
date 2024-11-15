@@ -1,0 +1,48 @@
+{% extends "cine/base.html" %}
+{% load static %}
+{% block titulo %}
+<h5 class="card-title text-center">Editar categoria de peliculas</h5>
+{% endblock titulo %}
+
+{% block contenido %}
+<form method="post" action="{% url 'categoriaEditado' categoria.idCategoria %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-9">
+            <div class="row">
+                <div class="col-6 mb-3">
+                    {{ form.nombreCategoria.label_tag }}
+                    {{ form.nombreCategoria }}
+                    <span class="text-danger">{{ form.nombreCategoria.errors }}</span>
+                </div>
+                <div class="col-6 mb-3">
+                    {{ form.descripcion.label_tag }}
+                    {{ form.descripcion }}
+                    <span class="text-danger">{{ form.descripcion.errors }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="text-center">
+                <img src="{{ categoria.imagenCategoria.url}}" alt="imagen de cine" width="200" height="200">
+                <div class="mb-3">
+                    {{ form.imagenCategoria.label_tag }}
+                    {{ form.imagenCategoria }}
+                    <span class="text-danger">{{ form.imagenCategoria.errors }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-1">
+            <a href="javascript:history.back()" class="btn btn-secondary">Volver</a>
+        </div>
+        <div class="col-1">
+            <a href="{% url 'eliminarCategoria' categoria.idCategoria %}" class="btn btn-danger">Eliminar</a>
+        </div>
+        <div class="col-1">
+            <button type="submit" class="btn btn-success">Guardar</button>
+        </div>
+    </div>
+</form>
+{% endblock contenido %}

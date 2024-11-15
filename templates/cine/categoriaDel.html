@@ -1,0 +1,26 @@
+{% extends "cine/base.html" %}
+{% load static %}
+
+{% block titulo %}
+<h5 class="card-title text-center">Eliminar Categoría</h5>
+{% endblock titulo %}
+
+{% block contenido %}
+<div class="col-10 offset-1">
+    <h3>Confirmar eliminación de categoría</h3>
+    <div class="alert alert-danger h4">
+        ¿Estás seguro de que deseas eliminar la categoría {{ categoria.nombreCategoria }}?
+    </div>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col">
+                <a href="javascript:history.back()" class="btn btn-secondary">Volver</a>
+            </div>
+            <div class="col">
+                <button class="btn btn-danger" type="submit">Eliminar</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock contenido %}
