@@ -1,8 +1,85 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from cine.forms import ComidaForm, CategoriaComidaForm, CineForm, CiudadForm, CategoriaForm, PeliculaForm
+from cine.forms import ComidaForm, CategoriaComidaForm, CineForm, CiudadForm, CategoriaForm, PeliculaForm, UserForm
 from cine.models import Comida, CategoriaComida, Cine, Ciudad, Categoria, Pelicula
+from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.models import User, Group
 
 # Create your views here.
+# --------------------- Usuarios --------------------#
+# Listar todos los usuarios
+def todos_usuarios(request):
+    query = ''
+    usuarios = User.objects.all()
+
+    if request.method == 'POST':
+        query = request.POST.get('buscar', '')
+        if query:
+            usuarios = usuarios.filter(username__icontains=query)
+
+    return render(request, 'cine/usuarios.html', {'usuarios': usuarios, 'query': query})
+
+@permission_required('auth.add_user')
+def crear_usuario(request):
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password'])
+            user.save()
+            grupo_id = request.POST.get('grupo')
+            if grupo_id:
+                grupo = Group.objects.get(id=grupo_id)
+                user.groups.add(grupo)
+
+            return redirect('/cine/usuarios/')
+    else:
+        form = UserForm()
+
+    grupos = Group.objects.all()
+    return render(request, 'cine/usuarioAdd.html', {'form': form, 'grupos': grupos})
+
+def cargar_editar_usuario(request, idUsuario):
+    usuario = get_object_or_404(User, id=idUsuario)
+    form = UserForm(instance=usuario)
+    grupos = Group.objects.all()  # Para mostrar los grupos
+    return render(request, 'cine/usuarioEdit.html', {'form': form, 'usuario': usuario, 'grupos': grupos})
+
+@permission_required('auth.change_user')
+def editar_usuario(request, idUsuario):
+    usuario = get_object_or_404(User, id=idUsuario)
+    grupo_usuario = usuario.groups.first()
+
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=usuario)
+        if form.is_valid():
+            if form.cleaned_data.get('password'):
+                usuario.set_password(form.cleaned_data['password'])
+            form.save()
+            grupo_id = request.POST.get('grupo')
+            if grupo_id:
+                usuario.groups.clear()
+                grupo = Group.objects.get(id=grupo_id)
+                usuario.groups.add(grupo)
+            return redirect('/cine/usuarios/')
+    else:
+        form = UserForm(instance=usuario)
+        if grupo_usuario:
+            form.fields['grupo'].initial = grupo_usuario.id
+    grupos = Group.objects.all()
+    return render(request, 'cine/usuarioEdit.html', {'form': form, 'usuario': usuario, 'grupos': grupos})
+
+@permission_required('auth.delete_user')
+def eliminar_usuario(request, idUsuario):
+    usuario = get_object_or_404(User, id=idUsuario)
+
+    if request.method == 'POST':
+        usuario.delete()
+        return redirect('/cine/usuarios/')
+
+    return render(request, 'cine/usuarioDel.html', {'usuario': usuario})
+
+
+
 # --------------------- Paginas principales --------------------#
 def index(request):
     categorias = Categoria.objects.all()
@@ -11,7 +88,15 @@ def index(request):
 def peliculas_por_categoria(request, idCategoria):
     categoria = get_object_or_404(Categoria, idCategoria=idCategoria)
     peliculas = Pelicula.objects.filter(categoria=categoria)
-    return render(request, 'cine/peliculas_por_categoria.html', {'categoria': categoria, 'peliculas': peliculas})
+    query = ''
+
+    if request.method == 'POST':
+        query = request.POST.get('buscar', '')
+        if query:
+            peliculas = peliculas.filter(titulo__icontains=query)
+
+    return render(request, 'cine/peliculas_por_categoria.html', {'categoria': categoria, 'peliculas': peliculas, 'query': query})
+
 
 def cine_cards(request):
     ciudades = Ciudad.objects.all()
@@ -20,7 +105,15 @@ def cine_cards(request):
 def cines_por_ciudad(request, idCiudad):
     ciudad = get_object_or_404(Ciudad, idCiudad=idCiudad)
     cines = Cine.objects.filter(ciudad=ciudad)
-    return render(request, 'cine/cines_por_ciudades.html', {'cines':cines})
+    query = ''
+
+    if request.method == 'POST':
+        query = request.POST.get('buscar', '')
+        if query:
+            cines = cines.filter(nombre__icontains=query)
+
+    return render(request, 'cine/cines_por_ciudades.html', {'ciudad': ciudad, 'cines': cines, 'query': query})
+
 
 def comidas_cards(request):
     categoria_comida = CategoriaComida.objects.all()
@@ -29,13 +122,30 @@ def comidas_cards(request):
 def comidas_por_categoria(request, idCategoriaComida):
     categoria = get_object_or_404(CategoriaComida, idCategoriaComida=idCategoriaComida)
     comidas = Comida.objects.filter(categoria=categoria)
-    return render(request, 'cine/comidas_por_categoria.html', {'categoria':categoria, 'comidas':comidas})
+    query = ''
+
+    if request.method == 'POST':
+        query = request.POST.get('buscar', '')
+        if query:
+            comidas = comidas.filter(nombre__icontains=query)
+
+    return render(request, 'cine/comidas_por_categoria.html', {'categoria': categoria, 'comidas': comidas, 'query': query})
+
 
 #---------------------- COMIDAS -------------------------#
+@permission_required('cine.view_comida')
 def todos_comida(request):
+    query = ''
     comidas = Comida.objects.all()
-    return render(request, 'cine/comidas.html', {'comidas':comidas})
 
+    if request.method == 'POST':
+        query = request.POST.get('buscar', '')
+        if query:
+            comidas = comidas.filter(nombre__icontains=query)
+
+    return render(request, 'cine/comidas.html', {'comidas': comidas, 'query': query})
+
+@permission_required('cine.add_comida')
 def crear_comida(request):
     if request.method == 'POST':
         form = ComidaForm(request.POST, request.FILES)
@@ -52,6 +162,7 @@ def cargar_editar_comida(request, idComida):
     form = ComidaForm(instance=comida)
     return render(request, 'cine/comidaEdit.html', { 'form': form, 'comida':comida })
 
+@permission_required('cine.change_comida')
 def editar_comida(request, idComida):
     comida = get_object_or_404(Comida, idComida=idComida)
 
@@ -68,6 +179,7 @@ def editar_comida(request, idComida):
 
     return render(request, 'cine/comidaEdit.html', {'form': form, 'comida': comida})
 
+@permission_required('cine.delete_comida')
 def eliminar_comida(request, idComida):
     comida = get_object_or_404(Comida, idComida=idComida)
     
@@ -79,8 +191,16 @@ def eliminar_comida(request, idComida):
 
 # ---------------------- CATEGORIA ----------------------#
 def todos_categoria(request):
+    query = ''
     categorias = Categoria.objects.all()
-    return render(request, 'cine/categorias.html', {'categorias': categorias})
+
+    if request.method == 'POST':
+        query = request.POST.get('buscar', '')
+        if query:
+            categorias = categorias.filter(nombreCategoria__icontains=query)
+
+    return render(request, 'cine/categorias.html', {'categorias': categorias, 'query': query})
+
 
 def crear_categoria(request):
     if request.method == 'POST':
@@ -121,8 +241,16 @@ def eliminar_categoria(request, idCategoria):
 
 # ---------------------- PELICULA ----------------------#
 def todos_pelicula(request):
+    query = ''
     peliculas = Pelicula.objects.all()
-    return render(request, 'cine/peliculas.html', {'peliculas': peliculas})
+
+    if request.method == 'POST':
+        query = request.POST.get('buscar', '')
+        if query:
+            peliculas = peliculas.filter(titulo__icontains=query)
+
+    return render(request, 'cine/peliculas.html', {'peliculas': peliculas, 'query': query})
+
 
 def crear_pelicula(request):
     if request.method == 'POST':
@@ -163,8 +291,16 @@ def eliminar_pelicula(request, idPelicula):
 
 # ---------------------- CIUDAD ----------------------#
 def todos_ciudad(request):
+    query = ''
     ciudades = Ciudad.objects.all()
-    return render(request, 'cine/ciudades.html', {'ciudades': ciudades})
+
+    if request.method == 'POST':
+        query = request.POST.get('buscar', '')
+        if query:
+            ciudades = ciudades.filter(nombre__icontains=query)
+
+    return render(request, 'cine/ciudades.html', {'ciudades': ciudades, 'query': query})
+
 
 def crear_ciudad(request):
     if request.method == 'POST':
@@ -205,8 +341,16 @@ def eliminar_ciudad(request, idCiudad):
 
 # ---------------------- CINE ----------------------#
 def todos_cine(request):
+    query = ''
     cines = Cine.objects.all()
-    return render(request, 'cine/cines.html', {'cines': cines})
+
+    if request.method == 'POST':
+        query = request.POST.get('buscar', '')
+        if query:
+            cines = cines.filter(nombre__icontains=query)
+
+    return render(request, 'cine/cines.html', {'cines': cines, 'query': query})
+
 
 def crear_cine(request):
     if request.method == 'POST':
@@ -247,8 +391,16 @@ def eliminar_cine(request, idCine):
 
 # ---------------------- CATEGORIA COMIDAS ----------------------#
 def todos_categoria_comida(request):
+    query = ''
     categorias_comidas = CategoriaComida.objects.all()
-    return render(request, 'cine/categoria_comidas.html', {'categorias_comidas': categorias_comidas})
+
+    if request.method == 'POST':
+        query = request.POST.get('buscar', '')
+        if query:
+            categorias_comidas = categorias_comidas.filter(nombreCategoriaComida__icontains=query)
+
+    return render(request, 'cine/categoria_comidas.html', {'categorias_comidas': categorias_comidas, 'query': query})
+
 
 def crear_categoria_comida(request):
     if request.method == 'POST':

@@ -1,16 +1,26 @@
 {% extends "cine/base.html" %}
 {% load static %}
-
+{% load user_tags %}
 {% block titulo %}
 <h5 class="card-title text-center">Categorías</h5>
 {% endblock titulo %}
 
 {% block contenido %}
 <div class="container mt-4">
-    <div class="d-flex justify-content-between mb-3">
-        <input type="search" class="form-control w-50" placeholder="Buscar categoría...">
-        <a class="btn btn-success ms-3" href="{% url 'crearCategoria' %}">Crear</a>
+    <div class="d-flex justify-content-between mb-3 align-items-center">
+        <!-- Contenedor del buscador -->
+        <div class="d-flex align-items-center w-75">
+            <form method="post" class="d-flex w-100">
+                {% csrf_token %}
+                <input type="search" name="buscar" class="form-control me-2" placeholder="Buscar categoría..." value="{{ query }}">
+                <button class="btn btn-success" type="submit">Buscar</button>
+            </form>
+        </div>
+    
+        <!-- Botón Crear Categoría -->
+        <a class="btn btn-success" href="{% url 'crearCategoria' %}">Crear</a>
     </div>
+    
 
     <table class="table table-striped table-hover">
         <thead>

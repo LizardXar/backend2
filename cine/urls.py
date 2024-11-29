@@ -1,8 +1,15 @@
-from django.urls import path
+from django.urls import path,include
 from cine import views as vista
 
 
 urlpatterns = [
+    # ---------------- Registro y mantenedor usuarios ----------#
+    path('usuarios/', vista.todos_usuarios, name='usuarios'),
+    path('usuarioAdd/', vista.crear_usuario, name='crearUsuario'),
+    path('usuarioEdit/<int:idUsuario>/', vista.cargar_editar_usuario, name='cargarEditarUsuario'),
+    path('usuarioEditado/<int:idUsuario>/', vista.editar_usuario, name='editarUsuario'),
+    path('usuarioDel/<int:idUsuario>/', vista.eliminar_usuario, name='eliminarUsuario'),
+
     # --------------- Contenido principal ----------#
     path('index/', vista.index, name='index'),
     path('categoria/<int:idCategoria>/', vista.peliculas_por_categoria, name='peliculas_por_categoria'),

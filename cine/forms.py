@@ -1,7 +1,7 @@
 from django import forms
 from cine.models import Categoria, CategoriaComida, Pelicula, Comida, Ciudad, Cine
 from django.core.exceptions import ValidationError
-
+from django.contrib.auth.models import User, Group
 
 # Formulario para Categoria
 class CategoriaForm(forms.ModelForm):
@@ -97,3 +97,41 @@ class CategoriaComidaForm(forms.ModelForm):
     class Meta:
         model = CategoriaComida
         fields = '__all__'
+
+
+# Formulario para registrar usuarios
+class UserForm(forms.ModelForm):
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True, label="Nombre de Usuario")
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}), required=True, label="Correo Electrónico")
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True, label="Nombre")
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True, label="Apellido")
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}), required=False, label="Contraseña")
+    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}), required=False, label="Confirmar Contraseña")
+    grupo = forms.ModelChoiceField(queryset=Group.objects.all(),widget=forms.Select(attrs={'class': 'form-control'}),required=True,label="Grupo:")
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name', 'password', 'grupo']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get('password')
+        confirm_password = cleaned_data.get('confirm_password')
+
+        if self.instance and self.instance.pk:
+            if not password and not confirm_password:
+                return cleaned_data
+        else:
+            if not password:
+                self.add_error('password', "Debes ingresar una contraseña")
+            if not confirm_password:
+                self.add_error('confirm_password', "Debes confirmar tu contraseña")
+
+            if password != confirm_password:
+                self.add_error('password', "Las contraseñas no coinciden")
+                self.add_error('confirm_password', "Las contraseñas no coinciden")
+            
+            if len(password) < 8:
+                self.add_error('password', "La contraseña debe tener un minimo de 8 caracteres")
+
+        return cleaned_data

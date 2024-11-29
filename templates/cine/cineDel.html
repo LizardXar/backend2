@@ -1,6 +1,6 @@
 {% extends "cine/base.html" %}
 {% load static %}
-
+{% load user_tags %}
 {% block titulo %}
 <h5 class="card-title text-center">Eliminar Cine</h5>
 {% endblock titulo %}
@@ -17,9 +17,14 @@
             <div class="col">
                 <a href="javascript:history.back()" class="btn btn-secondary">Volver</a>
             </div>
+            {% if user.is_authenticated %}
+{% if user|in_group:"Administrador" or user|in_group:"Vendedor" %}
+
             <div class="col">
                 <button class="btn btn-danger" type="submit">Eliminar</button>
             </div>
+            {% endif %}
+            {% endif %}
         </div>
     </form>
 </div>

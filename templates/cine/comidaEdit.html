@@ -1,6 +1,6 @@
 {% extends "cine/base.html" %}
 {% load static %}
-
+{% load user_tags %}
 {% block titulo %}
 <h5 class="card-title text-center">Editar Comida</h5>
 {% endblock titulo %}
@@ -33,7 +33,7 @@
         <!-- Columna de 3: Imagen e input de imagen -->
         <div class="col-3">
             <div class="text-center">
-                <img src="{% static 'img/comida.png' %}" alt="imagen de una comida" width="200" height="auto">
+                <img src="{{ comida.imagenComida.url }}" alt="imagen de una comida" width="200" height="auto">
                 <div class="mb-3">
                     {{ form.imagenComida.label_tag }}
                     {{ form.imagenComida }}
@@ -47,8 +47,12 @@
     <div class="row mt-4">
         <div class="col-12 d-flex justify-content-left gap-3">
             <a href="javascript:history.back()" class="btn btn-secondary">Volver</a>
+                        {% if user.is_authenticated %}
+{% if user|in_group:"Administrador" or user|in_group:"Vendedor" %}
             <a href="{% url 'eliminarComida' comida.idComida %}" class="btn btn-danger">Eliminar</i></a>
             <button type="submit" class="btn btn-success">Guardar</button>
+                        {% endif %}
+            {% endif %}
         </div>
     </div>
 </form>

@@ -1,6 +1,6 @@
 {% extends "cine/base.html" %}
 {% load static %}
-
+{% load user_tags %}
 {% block titulo %}
 <h5 class="card-title text-center">Ciudades con Cines</h5>
 {% endblock titulo %}
@@ -19,8 +19,6 @@
                 </div>
             </div>
         </div>
-        {% empty %}
-        <p class="text-center">No hay ciudades disponibles en este momento.</p>
         {% endfor %}
     </div>
 </div>

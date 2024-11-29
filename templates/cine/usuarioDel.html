@@ -2,14 +2,14 @@
 {% load static %}
 {% load user_tags %}
 {% block titulo %}
-<h5 class="card-title text-center">Eliminar Ciudad</h5>
+<h5 class="card-title text-center">Eliminar Usuario</h5>
 {% endblock titulo %}
 
 {% block contenido %}
 <div class="col-10 offset-1">
-    <h3>Confirmar eliminación de ciudad</h3>
+    <h3>Confirmar eliminación de película</h3>
     <div class="alert alert-danger h4">
-        ¿Estás seguro de que deseas eliminar la ciudad {{ ciudad.nombre }}?
+        ¿Estás seguro de que deseas eliminar al usuario {{ usuario.username }}?
     </div>
     <form method="POST">
         {% csrf_token %}
@@ -17,13 +17,13 @@
             <div class="col">
                 <a href="javascript:history.back()" class="btn btn-secondary">Volver</a>
             </div>
-                        {% if user.is_authenticated %}
-{% if user|in_group:"Administrador" or user|in_group:"Vendedor" %}
             <div class="col">
+                            {% if user.is_authenticated %}
+{% if user|in_group:"Administrador" or user|in_group:"Vendedor" %}
                 <button class="btn btn-danger" type="submit">Eliminar</button>
-            </div>
-                        {% endif %}
+                            {% endif %}
             {% endif %}
+            </div>
         </div>
     </form>
 </div>

@@ -1,0 +1,65 @@
+{% extends "cine/base.html" %}
+{% load static %}
+{% load user_tags %}
+
+{% block titulo %}
+<h5 class="card-title text-center">Crear Usuario</h5>
+{% endblock titulo %}
+
+{% block contenido %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-9">
+            <div class="row">
+                <div class="col-4 mb-3">
+                    {{ form.username.label_tag }}
+                    {{ form.username }}
+                    <span class="text-danger">{{ form.username.errors }}</span>
+                </div>
+                <div class="col-4 mb-3">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                    <span class="text-danger">{{ form.email.errors }}</span>
+                </div>
+                <div class="col-4 mb-3">
+                    {{ form.first_name.label_tag }}
+                    {{ form.first_name }}
+                    <span class="text-danger">{{ form.first_name.errors }}</span>
+                </div>
+                <div class="col-4 mb-3">
+                    {{ form.last_name.label_tag }}
+                    {{ form.last_name }}
+                    <span class="text-danger">{{ form.last_name.errors }}</span>
+                </div>
+                <div class="col-4 mb-3">
+                    {{ form.password.label_tag }}
+                    {{ form.password }}
+                    <span class="text-danger">{{ form.password.errors }}</span>
+                </div>
+                <div class="col-4 mb-3">
+                    {{ form.confirm_password.label_tag }}
+                    {{ form.confirm_password }}
+                    <span class="text-danger">{{ form.confirm_password.errors }}</span>
+                </div>
+                <div class="col-4 mb-3">
+                    {{ form.grupo.label_tag }}
+                    {{ form.grupo }}
+                    <span class="text-danger">{{ form.grupo.errors }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fila aparte para los botones -->
+        <div class="row mt-4">
+            <div class="col-12 d-flex justify-content-left gap-3">
+                <a href="javascript:history.back()" class="btn btn-secondary">Volver</a>
+        {% if user.is_authenticated %}
+            {% if user|in_group:"Administrador" or user|in_group:"Vendedor" %}
+                <button type="submit" class="btn btn-success">Guardar</button>
+                       {% endif %}
+        {% endif %}     
+            </div>
+        </div>
+</form>
+{% endblock contenido %}

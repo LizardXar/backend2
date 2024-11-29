@@ -1,15 +1,26 @@
 {% extends "cine/base.html" %}
 {% load static %}
-
+{% load user_tags %}
 {% block titulo %}
 <h5 class="card-title text-center">Comidas</h5>
 {% endblock titulo %}
 
 {% block contenido %}
 <div class="container mt-4">
-    <div class="d-flex justify-content-between mb-3">
-        <input type="search" class="form-control w-50" placeholder="Buscar comida...">
-        <a class="btn btn-success ms-3" href="{% url 'crearComidas' %}">Crear</a>
+    <div class="d-flex justify-content-between mb-3 align-items-center">
+        <div class="d-flex align-items-center w-75">
+            <form method="post" class="d-flex w-100">
+                {% csrf_token %}
+                <input type="search" name="buscar" class="form-control me-2" placeholder="Buscar comida..." value="{{ query }}">
+                <button class="btn btn-success" type="submit">Buscar</button>
+            </form>
+        </div>
+    
+                    {% if user.is_authenticated %}
+{% if user|in_group:"Administrador" or user|in_group:"Vendedor" %}
+        <a class="btn btn-success" href="{% url 'crearComidas' %}">Crear</a>
+                    {% endif %}
+            {% endif %}
     </div>
 
     <table class="table table-striped table-hover">

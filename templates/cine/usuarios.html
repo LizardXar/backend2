@@ -1,0 +1,52 @@
+{% extends "cine/base.html" %}
+{% block contenido %}
+{% load user_tags %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between mb-3 align-items-center">
+        <!-- Contenedor del buscador -->
+        <div class="d-flex align-items-center w-75">
+            <form method="post" class="d-flex w-100">
+                {% csrf_token %}
+                <input type="search" name="buscar" class="form-control me-2" placeholder="Buscar usuario..." value="{{ query }}">
+                <button class="btn btn-success" type="submit">Buscar</button>
+            </form>
+        </div>
+    
+        <!-- Botón Crear Usuario -->
+        {% if user.is_authenticated %}
+            {% if user|in_group:"Administrador" or user|in_group:"Vendedor" %}
+                <a class="btn btn-success" href="{% url 'crearUsuario' %}">Crear</a>
+            {% endif %}
+        {% endif %}
+    
+    </div>
+
+
+    <table class="table mt-4">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Usuario</th>
+                <th>Correo</th>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in usuarios %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ usuario.username }}</td>
+                <td>{{ usuario.email }}</td>
+                <td>{{ usuario.first_name }}</td>
+                <td>{{ usuario.last_name }}</td>
+                <td>
+                    <a href="{% url 'editarUsuario' usuario.id %}" class="text-primary"><i class="bi bi-eye"></i></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
