@@ -12,6 +12,17 @@ class CategoriaForm(forms.ModelForm):
         model = Categoria   
         fields = '__all__'
 
+    def clean_nombreCategoria(self):
+        nombre = self.cleaned_data.get('nombreCategoria')
+        if len(nombre) < 3 or len(nombre) > 30:
+            raise forms.ValidationError('El nombre de la categoria debe tener entre 3 y 30 caracteres.')
+        return nombre
+    
+    def clean_descripcion(self):
+        descripcion = self.cleaned_data.get('descripcion')
+        if len(descripcion) < 3 or len(descripcion) > 200:
+            raise forms.ValidationError('La descripcion de la categoria debe tener entre 3 y 200 caracteres.')
+        return descripcion    
 # Formulario para Pelicula
 class PeliculaForm(forms.ModelForm):
     titulo = forms.CharField(label='Nombre de la Pelicula',widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el título de la película'}))
@@ -41,7 +52,21 @@ class PeliculaForm(forms.ModelForm):
         fecha_estreno = self.cleaned_data.get('fecha_estreno')
         if fecha_estreno.year <= 1900:
             raise forms.ValidationError('La fecha de estreno debe ser posterior a 1900.')
+        if fecha_estreno.year >= 2050:
+            raise forms.ValidationError('La fecha de estreno debe ser anterior a 2050.')
         return fecha_estreno
+    
+    def clean_titulo(self):
+        titulo = self.cleaned_data.get('titulo')
+        if len(titulo) < 2 or len(titulo) > 50:
+            raise forms.ValidationError('El titulo debe tener entre 2 y 50 caracteres.')
+        return titulo
+    
+    def clean_descripcion(self):
+        descripcion = self.cleaned_data.get('descripcion')
+        if len(descripcion) < 3 or len(descripcion) > 300:
+            raise forms.ValidationError('La descripcion debe tener entre 3 y 300 caracteres.')
+        return descripcion
 
 # Formulario para Ciudad
 class CiudadForm(forms.ModelForm):
@@ -53,6 +78,11 @@ class CiudadForm(forms.ModelForm):
         model = Ciudad  
         fields = '__all__'
 
+    def clean_nombre(self):
+        nombre = self.cleaned_data.get('nombre')
+        if len(nombre) < 3 or len(nombre) > 30:
+            raise forms.ValidationError('El nombre de la ciudad debe tener entre 3 y 30 caracteres.')
+        return nombre
 # Formulario para Cine
 class CineForm(forms.ModelForm):
     nombre = forms.CharField(label='Nombre del Cine',widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el nombre del cine'}))
@@ -63,6 +93,18 @@ class CineForm(forms.ModelForm):
     class Meta:
         model = Cine    
         fields = '__all__'
+    
+    def clean_nombre(self):
+        nombre = self.cleaned_data.get('nombre')
+        if len(nombre) < 3 or len(nombre) > 50:
+            raise forms.ValidationError('El nombre del cine debe tener entre 3 y 50 caracteres.')
+        return nombre
+    
+    def clean_direccion(self):
+        direccion = self.cleaned_data.get('direccion')
+        if len(direccion) < 3 or len(direccion) > 50:
+            raise forms.ValidationError('La direccion del cine debe tener entre 3 y 50 caracteres.')
+        return direccion
 
 # Formulario para Comida
 class ComidaForm(forms.ModelForm):
@@ -87,6 +129,12 @@ class ComidaForm(forms.ModelForm):
         if precio <= 0:
             raise forms.ValidationError('El precio debe ser mayor a 0.')
         return precio
+    
+    def clean_nombre(self):
+        nombre = self.cleaned_data.get('nombre')
+        if len(nombre) < 3 or len(nombre) > 50:
+            raise forms.ValidationError('El nombre de la comida debe tener entre 3 y 50 caracteres.')
+        return nombre
 
 # Formulario para Categoria Comida
 class CategoriaComidaForm(forms.ModelForm):
@@ -97,6 +145,18 @@ class CategoriaComidaForm(forms.ModelForm):
     class Meta:
         model = CategoriaComida
         fields = '__all__'
+    
+    def clean_nombreCategoriaComida(self):
+        nombre = self.cleaned_data.get('nombreCategoriaComida')
+        if len(nombre) < 3 or len(nombre) > 50:
+            raise forms.ValidationError('El nombre de la categoría debe tener entre 3 y 50 caracteres.')
+        return nombre
+
+    def clean_descripcionCategoria(self):
+        descripcion = self.cleaned_data.get('descripcionCategoria')
+        if len(descripcion) < 5 or len(descripcion) > 200:
+            raise forms.ValidationError('La descripción de la categoría debe tener entre 5 y 200 caracteres.')
+        return descripcion
 
 
 # Formulario para registrar usuarios
@@ -107,7 +167,7 @@ class UserForm(forms.ModelForm):
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True, label="Apellido")
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}), required=False, label="Contraseña")
     confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}), required=False, label="Confirmar Contraseña")
-    grupo = forms.ModelChoiceField(queryset=Group.objects.all(),widget=forms.Select(attrs={'class': 'form-control'}),required=True,label="Grupo:")
+    grupo = forms.ModelChoiceField(queryset=Group.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}), required=True, label="Grupo:")
 
     class Meta:
         model = User
@@ -132,6 +192,30 @@ class UserForm(forms.ModelForm):
                 self.add_error('confirm_password', "Las contraseñas no coinciden")
             
             if len(password) < 8:
-                self.add_error('password', "La contraseña debe tener un minimo de 8 caracteres")
+                self.add_error('password', "La contraseña debe tener un mínimo de 8 caracteres")
 
         return cleaned_data
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if len(username) < 3 or len(username) > 20:
+            raise forms.ValidationError('El nombre de usuario debe tener entre 3 y 20 caracteres.')
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if len(email) < 3 or len(email) > 50:
+            raise forms.ValidationError('El correo electrónico debe tener entre 3 y 50 caracteres.')
+        return email
+
+    def clean_first_name(self):
+        first_name = self.cleaned_data.get('first_name')
+        if len(first_name) < 3 or len(first_name) > 20:
+            raise forms.ValidationError('El nombre debe tener entre 3 y 20 caracteres.')
+        return first_name
+
+    def clean_last_name(self):
+        last_name = self.cleaned_data.get('last_name')
+        if len(last_name) < 3 or len(last_name) > 20:
+            raise forms.ValidationError('El apellido debe tener entre 3 y 20 caracteres.')
+        return last_name
