@@ -142,9 +142,34 @@ class Cine(models.Model):
         verbose_name = 'Cine'
         verbose_name_plural = 'Cines'
 
+class Funcion(models.Model):
+    idFuncion = models.AutoField(primary_key=True)
+    pelicula = models.ForeignKey(Pelicula, on_delete=models.CASCADE, related_name='funciones')
+    fecha_hora = models.DateTimeField()
+    entradas_disponibles = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"Función de {self.pelicula.titulo} - {self.fecha_hora.strftime('%d/%m/%Y %H:%M')}"
+
+    class Meta:
+        db_table = 'funcion'
+        verbose_name = 'Función'
+        verbose_name_plural = 'Funciones'
 
 
+class Entrada(models.Model):
+    idEntrada = models.AutoField(primary_key=True)
+    funcion = models.ForeignKey(Funcion, on_delete=models.CASCADE, related_name='entradas')
+    precio = models.PositiveIntegerField(default=5200)
+    vendida = models.BooleanField(default=False)
 
+    def __str__(self):
+        return f"Entrada para {self.funcion} - {'Vendida' if self.vendida else 'Disponible'}"
+
+    class Meta:
+        db_table = 'entrada'
+        verbose_name = 'Entrada'
+        verbose_name_plural = 'Entradas'
 
 
 

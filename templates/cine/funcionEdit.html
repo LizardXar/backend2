@@ -1,0 +1,48 @@
+{% extends "cine/base.html" %}
+{% load static %}
+{% load user_tags %}
+
+{% block titulo %}
+<h5 class="card-title text-center">Modificar Función</h5>
+{% endblock titulo %}
+
+{% block contenido %}
+<form method="post">
+    {% csrf_token %}
+    <div class="row">
+        <!-- Campos del formulario -->
+        <div class="col-12">
+            <div class="row">
+                <div class="col-4 mb-3">
+                    {{ form.pelicula.label_tag }}
+                    {{ form.pelicula }}
+                    <span class="text-danger">{{ form.pelicula.errors }}</span>
+                </div>
+                <div class="col-4 mb-3">
+                    {{ form.fecha_hora.label_tag }}
+                    <input type="datetime-local" name="fecha_hora" value="{{ form.fecha_hora.value|date:'Y-m-d\TH:i' }}" class="form-control">
+                    <span class="text-danger">{{ form.fecha_hora.errors }}</span>
+                </div>
+                <div class="col-4 mb-3">
+                    {{ form.entradas_disponibles.label_tag }}
+                    {{ form.entradas_disponibles }}
+                    <span class="text-danger">{{ form.entradas_disponibles.errors }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fila para los botones -->
+    <div class="row mt-4">
+        <div class="col-12 d-flex justify-content-left gap-3">
+            <a href="javascript:history.back()" class="btn btn-secondary">Volver</a>
+            {% if user.is_authenticated %}
+                {% if user|in_group:"Administrador" or user|in_group:"Vendedor" %}
+                <a href="{% url 'eliminarFuncion' funcion.idFuncion %}" class="btn btn-danger">Eliminar</i></a>
+                <button type="submit" class="btn btn-success">Guardar</button>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</form>
+{% endblock contenido %}

@@ -1,0 +1,65 @@
+{% extends "cine/base.html" %}
+{% load static %}
+{% load user_tags %}
+
+{% block titulo %}
+<h5 class="card-title text-center">Comprar Entradas para {{ funcion.pelicula.titulo }}</h5>
+{% endblock titulo %}
+
+{% block contenido %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4 shadow-sm">
+                <!-- Imagen de la película -->
+                <img src="{{ funcion.pelicula.imagenPelicula.url }}" class="card-img-top" alt="{{ funcion.pelicula.titulo }}" style="height: 150px; object-fit: cover;">
+                
+                <div class="card-body">
+                    <!-- Información de la función -->
+                    <h5 class="card-title">{{ funcion.pelicula.titulo }}</h5>
+                    <p class="card-text">Fecha: {{ funcion.fecha_hora|date:"d/m/Y" }}</p>
+                    <p class="card-text">Hora: {{ funcion.fecha_hora|time:"H:i" }}</p>
+                    <p class="card-text">Entradas disponibles: {{ entradas_disponibles }}</p>
+                    
+                    <!-- Formulario para la compra -->
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="funcion" class="form-label">Función</label>
+                            <input type="text" class="form-control" id="funcion" value="{{ funcion }}" readonly>
+                        </div>
+
+                        <!-- Campo de cantidad de entradas -->
+                        <div class="mb-3">
+                            <label for="cantidad" class="form-label">Cantidad de entradas</label>
+                            <input type="number" class="form-control" id="cantidad" name="cantidad" min="1" max="{{ entradas_disponibles }}" required>
+                        </div>
+
+                        <!-- Campo de total calculado -->
+                        <div class="mb-3">
+                            <label for="total" class="form-label">Total</label>
+                            <input type="text" class="form-control" id="total" name="total" readonly>
+                        </div>
+
+                        <!-- Botón para comprar -->
+                        <button type="submit" class="btn btn-success">Comprar</button>
+                    </form>
+
+                    <!-- Mensajes de error, si los hay -->
+                    {% if form.errors %}
+                        <div class="alert alert-danger mt-3">
+                            <ul>
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock contenido %}

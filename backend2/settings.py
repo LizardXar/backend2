@@ -7,7 +7,6 @@ TEMPLATES_DIR = os.path.join(BASE_DIR,'templates')
 STATIC_DIR = os.path.join(BASE_DIR,'static')
 
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -15,9 +14,9 @@ STATIC_DIR = os.path.join(BASE_DIR,'static')
 SECRET_KEY = 'django-insecure-+-e-#da9^-ntf32yps(^5#aorzy4*$1#^+ilhbbbonz$nord)&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['lizardxar.pythonanywhere.com']
 
 LOGIN_REDIRECT_URL = "/cine/index/"
 LOGOUT_REDIRECT_URL = "/accounts/login/"
@@ -34,6 +33,8 @@ INSTALLED_APPS = [
     'cine',
     'crispy_forms',
     'crispy_bootstrap5',
+    'cine_api',
+    'rest_framework'
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"

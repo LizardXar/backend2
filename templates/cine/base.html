@@ -28,6 +28,7 @@
                 <li class="nav-item"><a class="nav-link active" href="{% url 'index' %}">Inicio</a></li>
                 <li class="nav-item"><a class="nav-link active" href="{% url 'cine_cards' %}">Cines</a></li>
                 <li class="nav-item"><a class="nav-link active" href="{% url 'comidas_cards' %}">Comidas</a></li>
+                <li class="nav-item"><a class="nav-link active" href="{% url 'funcion_pelicula' %}">Funciones</a></li>
                 {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="dropdownMenuButton" role="button"
@@ -42,6 +43,7 @@
                         <li><a class="dropdown-item" href="{% url 'categoriasComidas' %}">Categoría de comidas</a></li>
                         <li><a class="dropdown-item" href="{% url 'categorias' %}">Categoría de películas</a></li>
                         <li><a class="dropdown-item" href="{% url 'usuarios' %}">Usuarios</a></li>
+                        <li><a class="dropdown-item" href="{% url 'funciones' %}">Funciones</a></li>
                     </ul>
                 </li>
                 {% endif %}

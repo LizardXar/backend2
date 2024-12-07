@@ -1,5 +1,5 @@
 from django import forms
-from cine.models import Categoria, CategoriaComida, Pelicula, Comida, Ciudad, Cine
+from cine.models import Categoria, CategoriaComida, Pelicula, Comida, Ciudad, Cine, Funcion, Entrada
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User, Group
 
@@ -219,3 +219,96 @@ class UserForm(forms.ModelForm):
         if len(last_name) < 3 or len(last_name) > 20:
             raise forms.ValidationError('El apellido debe tener entre 3 y 20 caracteres.')
         return last_name
+
+
+
+class FuncionForm(forms.ModelForm):
+    pelicula = forms.ModelChoiceField(
+        label='Película',
+        queryset=Pelicula.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    fecha_hora = forms.DateTimeField(
+        label='Fecha y hora de la función',
+        widget=forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'})
+    )
+    entradas_disponibles = forms.IntegerField(
+        label='Entradas disponibles',
+        initial=28,
+        min_value=1,
+        max_value=28,
+        widget=forms.NumberInput(attrs={'class': 'form-control'})
+    )
+
+    class Meta:
+        model = Funcion
+        fields = ['pelicula', 'fecha_hora', 'entradas_disponibles']
+
+    def clean_entradas_disponibles(self):
+        entradas = self.cleaned_data.get('entradas_disponibles')
+        if entradas != 28:  # Garantiza que siempre sean 28
+            raise forms.ValidationError('Las entradas disponibles deben ser 28.')
+        return entradas
+    
+
+class CompraEntradasForm(forms.Form):
+    funcion = forms.ModelChoiceField(
+        queryset=Funcion.objects.all(),
+        label='Función',
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'funcion'}),
+    )
+    pelicula = forms.CharField(
+        label='Película',
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
+    )
+    entradas_disponibles = forms.IntegerField(
+        label='Entradas disponibles',
+        required=False,
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
+    )
+    cantidad = forms.IntegerField(
+        label='Cantidad de entradas',
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'id': 'cantidad', 'placeholder': 'Ingrese la cantidad de entradas'}),
+        min_value=1
+    )
+    total = forms.IntegerField(
+        label='Total',
+        required=False,
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'id': 'total', 'readonly': 'readonly'}),
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Si se pasa una función, calculamos las entradas disponibles
+        if 'initial' in kwargs:
+            funcion = kwargs['initial'].get('funcion')
+            if funcion:
+                self.fields['pelicula'].initial = funcion.pelicula.titulo
+                self.fields['entradas_disponibles'].initial = funcion.entradas_disponibles - funcion.entradas.filter(vendida=True).count()
+                self.fields['total'].initial = funcion.entradas_disponibles * 5200
+                self.funcion = funcion
+            else:
+                self.funcion = None
+        else:
+            self.funcion = None
+
+    def clean_cantidad(self):
+        cantidad = self.cleaned_data.get('cantidad')
+        funcion = self.cleaned_data.get('funcion')
+        if funcion and cantidad > (funcion.entradas_disponibles - funcion.entradas.filter(vendida=True).count()):
+            raise forms.ValidationError(f'Sólo hay {funcion.entradas_disponibles - funcion.entradas.filter(vendida=True).count()} entradas disponibles para esta función.')
+        return cantidad
+
+    def update_total(self):
+        cantidad = self.cleaned_data.get('cantidad', 0)
+        if cantidad > 0 and self.funcion:
+            total = cantidad * 5200
+            self.cleaned_data['total'] = total
+        else:
+            self.cleaned_data['total'] = 0
+
+
+

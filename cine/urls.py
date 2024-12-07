@@ -3,6 +3,18 @@ from cine import views as vista
 
 
 urlpatterns = [
+    # ------------- venta de funciones -----#
+    path('funciones_peliculas/', vista.funcion_pelicula, name='funcion_pelicula'),
+    path('comprar_entradas/<int:idFuncion>/', vista.comprar_entradas, name='comprar_entradas'),
+    path('compra_exito/', vista.compra_exito, name='compra_exito'),
+
+    # ---------------- Funciones ----------#
+    path('funciones/', vista.todas_funciones, name='funciones'),
+    path('funcionAdd/', vista.crear_funcion, name='crearFuncion'),
+    path('funcionEdit/<int:idFuncion>/', vista.cargar_editar_funcion, name='cargarEditarFuncion'),
+    path('funcionEditado/<int:idFuncion>/', vista.editar_funcion, name='editarFuncion'),
+    path('funcionDel/<int:idFuncion>/', vista.eliminar_funcion, name='eliminarFuncion'),
+
     # ---------------- Registro y mantenedor usuarios ----------#
     path('usuarios/', vista.todos_usuarios, name='usuarios'),
     path('usuarioAdd/', vista.crear_usuario, name='crearUsuario'),

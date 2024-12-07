@@ -1,0 +1,31 @@
+{% extends "cine/base.html" %}
+{% load static %}
+{% load user_tags %}
+{% block titulo %}
+<h5 class="card-title text-center">Eliminar Función</h5>
+{% endblock titulo %}
+
+{% block contenido %}
+<div class="col-10 offset-1">
+    <h3>Confirmar eliminación de función</h3>
+    <div class="alert alert-danger h4">
+        ¿Estás seguro de que deseas eliminar la función para la película **{{ funcion.pelicula.titulo }}** programada el 
+        <strong>{{ funcion.fecha_hora|date:"d/m/Y H:i" }}</strong>?
+    </div>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col">
+                <a href="javascript:history.back()" class="btn btn-secondary">Volver</a>
+            </div>
+            <div class="col text-end">
+                {% if user.is_authenticated %}
+                    {% if user|in_group:"Administrador" or user|in_group:"Vendedor" %}
+                        <button class="btn btn-danger" type="submit">Eliminar</button>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock contenido %}

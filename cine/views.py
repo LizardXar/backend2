@@ -1,12 +1,141 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from cine.forms import ComidaForm, CategoriaComidaForm, CineForm, CiudadForm, CategoriaForm, PeliculaForm, UserForm
-from cine.models import Comida, CategoriaComida, Cine, Ciudad, Categoria, Pelicula
+from cine.forms import ComidaForm, CategoriaComidaForm, CineForm, CiudadForm, CategoriaForm, PeliculaForm, UserForm, CompraEntradasForm, FuncionForm
+from cine.models import Comida, CategoriaComida, Cine, Ciudad, Categoria, Pelicula, Funcion, Entrada
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User, Group
 
 # Create your views here.
+# ------------------- Funciones y entradas -----------#
+def funcion_pelicula(request):
+    funciones = Funcion.objects.all()
+    return render(request, 'cine/funcion_pelicula.html', {'funciones': funciones})
+
+def compra_exito(request):
+    cantidad = request.session.get('cantidad', 0)
+    precio = 5200 
+    total = cantidad * precio
+
+    return render(request, 'cine/compra_exito.html', {
+        'cantidad': cantidad,
+        'precio': precio,
+        'total': total,
+    })
+
+def comprar_entradas(request, idFuncion):
+    funcion = get_object_or_404(Funcion, idFuncion=idFuncion)
+    
+    entradas_vendidas = funcion.entradas.filter(vendida=True).count()
+    entradas_disponibles = funcion.entradas_disponibles - entradas_vendidas
+    
+    if request.method == 'POST':
+        form = CompraEntradasForm(request.POST)
+        form.fields['funcion'].initial = funcion
+
+        if form.is_valid():
+            cantidad = form.cleaned_data['cantidad']
+
+            if cantidad > entradas_disponibles:
+                form.add_error('cantidad', f'Sólo hay {entradas_disponibles} entradas disponibles para esta función.')
+                return render(request, 'cine/comprar_entradas.html', {
+                    'form': form,
+                    'funcion': funcion,
+                    'entradas_disponibles': entradas_disponibles
+                })
+
+            # Procesar la compra
+            for _ in range(cantidad):
+                Entrada.objects.create(
+                    funcion=funcion,
+                    precio=5200,
+                    vendida=True
+                )
+
+            funcion.entradas_disponibles -= cantidad
+            funcion.save()
+
+            # Guardar en la sesión la cantidad de entradas compradas
+            request.session['cantidad'] = cantidad
+
+            return redirect('compra_exito')
+    else:
+        form = CompraEntradasForm(initial={'funcion': funcion})
+
+    return render(request, 'cine/comprar_entradas.html', {
+        'form': form,
+        'funcion': funcion,
+        'entradas_disponibles': entradas_disponibles
+    })
+
+
+@permission_required('cine.view_funcion')
+def todas_funciones(request):
+    query = ''
+    funciones = Funcion.objects.select_related('pelicula').all()
+
+    if request.method == 'POST':
+        query = request.POST.get('buscar', '')
+        if query:
+            funciones = funciones.filter(pelicula__titulo__icontains=query)
+
+    return render(request, 'cine/funciones.html', {'funciones': funciones, 'query': query})
+
+
+@permission_required('cine.view_funcion')
+def todas_funciones(request):
+    query = ''
+    funciones = Funcion.objects.select_related('pelicula').all()
+
+    if request.method == 'POST':
+        query = request.POST.get('buscar', '')
+        if query:
+            funciones = funciones.filter(pelicula__titulo__icontains=query)
+
+    return render(request, 'cine/funciones.html', {'funciones': funciones, 'query': query})
+
+
+@permission_required('cine.add_funcion')
+def crear_funcion(request):
+    if request.method == 'POST':
+        form = FuncionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/cine/funciones/')
+    else:
+        form = FuncionForm()
+
+    return render(request, 'cine/funcionAdd.html', {'form': form})
+
+@permission_required('cine.view_funcion')
+def cargar_editar_funcion(request, idFuncion):
+    funcion = get_object_or_404(Funcion, idFuncion=idFuncion)
+    form = FuncionForm(instance=funcion)
+    return render(request, 'cine/funcionEdit.html', {'form': form, 'funcion': funcion})
+
+@permission_required('cine.change_funcion')
+def editar_funcion(request, idFuncion):
+    funcion = get_object_or_404(Funcion, idFuncion=idFuncion)
+
+    if request.method == 'POST':
+        form = FuncionForm(request.POST, instance=funcion)
+        if form.is_valid():
+            form.save()
+            return redirect('/cine/funciones/')
+    else:
+        form = FuncionForm(instance=funcion)
+
+    return render(request, 'cine/funcionEdit.html', {'form': form, 'funcion': funcion})
+
+@permission_required('cine.delete_funcion')
+def eliminar_funcion(request, idFuncion):
+    funcion = get_object_or_404(Funcion, idFuncion=idFuncion)
+    
+    if request.method == 'POST':
+        funcion.delete()
+        return redirect('/cine/funciones/')
+    
+    return render(request, 'cine/funcionDel.html', {'funcion': funcion})
+
 # --------------------- Usuarios --------------------#
-# Listar todos los usuarios
 def todos_usuarios(request):
     query = ''
     usuarios = User.objects.all()
